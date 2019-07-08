@@ -27,6 +27,7 @@ class BurgerBuilder extends Component {
   };
 
   componentDidMount() {
+    console.log(this.props);
     axios
       .get("https://my-burger-builder-proj.firebaseio.com/ingredients.json")
       .then(response => {
@@ -112,6 +113,7 @@ class BurgerBuilder extends Component {
     //   .catch(error => {
     //     this.setState({ loading: false, purchasing: false });
     //   });
+    this.props.history.push("/checkout");
   };
 
   render() {
