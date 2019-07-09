@@ -12,9 +12,17 @@ const Order = props => {
     });
   }
 
+  const ingredientOutput = ingredients.map(ig => {
+    return (
+      <span>
+        {ig.name} ({ig.amount})
+      </span>
+    );
+  });
+
   return (
     <div className={classes.Order}>
-      <p>Ingredients: Salad (1)</p>
+      <p>Ingredients: {ingredientOutput}</p>
       <p>
         Price: <strong>USD {Number.parseFloat(props.price).toFixed(2)}</strong>
       </p>
