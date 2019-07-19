@@ -1,13 +1,15 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-import Aux from "../../hoc/Aux/Aux";
-import Burger from "../../components/Burger/Burger";
-import BuildControls from "../../components/Burger/BuildControls/BuildControls";
-import Modal from "../../components/UI/Modal/Modal";
-import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
-import Spinner from "../../components/UI/Spinner/Spinner";
-import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
-import axios from "../../axios-orders";
+import Aux from '../../hoc/Aux/Aux';
+import Burger from '../../components/Burger/Burger';
+import BuildControls from '../../components/Burger/BuildControls/BuildControls';
+import Modal from '../../components/UI/Modal/Modal';
+import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
+import Spinner from '../../components/UI/Spinner/Spinner';
+import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
+import axios from '../../axios-orders';
+import * as actionTypes from '../../store/actions';
 
 const INGREDIENT_PRICES = {
   salad: 0.5,
@@ -29,7 +31,7 @@ class BurgerBuilder extends Component {
   componentDidMount() {
     console.log(this.props);
     axios
-      .get("https://my-burger-builder-proj.firebaseio.com/ingredients.json")
+      .get('https://my-burger-builder-proj.firebaseio.com/ingredients.json')
       .then(response => {
         this.setState({ ingredients: response.data });
       })
@@ -96,18 +98,18 @@ class BurgerBuilder extends Component {
     for (let i in this.state.ingredients) {
       queryParams.push(
         encodeURIComponent(i) +
-          "=" +
+          '=' +
           encodeURIComponent(this.state.ingredients[i])
       );
     }
 
-    queryParams.push("price=" + this.state.totalPrice);
+    queryParams.push('price=' + this.state.totalPrice);
 
-    const queryString = queryParams.join("&");
+    const queryString = queryParams.join('&');
 
     this.props.history.push({
-      pathname: "/checkout",
-      search: "?" + queryString
+      pathname: '/checkout',
+      search: '?' + queryString
     });
   };
 
@@ -170,4 +172,25 @@ class BurgerBuilder extends Component {
   }
 }
 
-export default withErrorHandler(BurgerBuilder, axios);
+const mapStateToProps = state => {
+  return {
+    ings: state.ingredients
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onIngredientAdded: ingName =>
+      dispatch({ type: actionTypes.ADD_INGREDIENTS, ingredientNAME: ingName }),
+    onIngredientRemoved: ingName =>
+      dispatch({
+        type: actionTypes.REMOVE_INGREDIENTS,
+        ingredientNAME: ingName
+      })
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withErrorHandler(BurgerBuilder, axios));
